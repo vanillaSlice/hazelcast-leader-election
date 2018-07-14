@@ -1,0 +1,12 @@
+server:
+  port: 7080
+
+management:
+  port: 7081
+
+leader-election:
+  hazelcast-config-properties:
+    hazelcast.discovery.enabled: 'true'
+    hazelcast.initial.min.cluster.size: '3'
+  kubernetes-service-name: 'leader-election'
+  leadership-poll-millis: 5000

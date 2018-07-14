@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: leader-election
+spec:
+  selector:
+    app: leader-election
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 7080

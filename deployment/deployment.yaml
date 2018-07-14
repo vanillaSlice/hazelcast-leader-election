@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leader-election
+  labels:
+    app: leader-election
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: leader-election
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: leader-election
+    spec:
+      containers:
+        - image: lowe.mike/leader-election:1.0.0
+          name: leader-election
+          ports:
+            - containerPort: 7080
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 7081
