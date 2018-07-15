@@ -68,7 +68,7 @@ public class LeaderElectionService {
 
         if (outnumbered) {
             log.info("Outnumbered so yielding leadership");
-            leaderInitiator.stop();
+            leaderInitiator.getContext().yield();
         }
     }
 
