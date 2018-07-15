@@ -8,6 +8,7 @@ leader-election:
   hazelcast-config-properties:
     hazelcast.discovery.enabled: 'true'
     hazelcast.initial.min.cluster.size: '3'
+    hazelcast.shutdownhook.policy: 'GRACEFUL'
   kubernetes-service-name: 'leader-election'
   leadership-poll-millis: 5000
   min-quorum-size: 2
