@@ -7,11 +7,11 @@ management:
 leader-election:
   hazelcast-config-properties:
     hazelcast.discovery.enabled: 'true'
-    hazelcast.heartbeat.interval.seconds: '1'
+#    hazelcast.heartbeat.interval.seconds: '1'
     hazelcast.initial.min.cluster.size: '3'
-    hazelcast.max.no.heartbeat.seconds: '7'
-    hazelcast.merge.first.run.delay.seconds: '7'
-    hazelcast.merge.next.run.delay.seconds: '7'
+#    hazelcast.max.no.heartbeat.seconds: '7'
+#    hazelcast.merge.first.run.delay.seconds: '7'
+#    hazelcast.merge.next.run.delay.seconds: '7'
     hazelcast.shutdownhook.policy: 'GRACEFUL'
     hazelcast.phone.home.enabled: 'false'
   kubernetes-service-name: 'leader-election'

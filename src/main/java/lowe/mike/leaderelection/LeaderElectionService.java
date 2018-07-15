@@ -51,7 +51,7 @@ public class LeaderElectionService {
     }
 
     @Scheduled(fixedRateString = "${leader-election.leadership-poll-millis:5000}")
-    public void revokeLeadershipIfOutnumbered() {
+    public void revokeLeadershipIfOutnumbered() throws Exception {
         // not leader so don't need to do anything
         if (!leaderInitiator.getContext().isLeader()) {
             return;
@@ -67,8 +67,8 @@ public class LeaderElectionService {
         final boolean outnumbered = appVersions.entrySet().stream().anyMatch(e -> e.getValue() > currentVersionCount);
 
         if (outnumbered) {
-            log.info("Outnumbered so yielding leadership");
-            leaderInitiator.getContext().yield();
+            log.info("Outnumbered so destroying leader initiator");
+            leaderInitiator.destroy();
         }
     }
 
