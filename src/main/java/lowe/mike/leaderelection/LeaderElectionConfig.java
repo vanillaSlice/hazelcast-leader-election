@@ -14,10 +14,9 @@ import org.springframework.integration.hazelcast.leader.LeaderInitiator;
 import org.springframework.integration.leader.Candidate;
 import org.springframework.integration.leader.DefaultCandidate;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 public class LeaderElectionConfig {
@@ -71,8 +70,8 @@ public class LeaderElectionConfig {
     }
 
     @Bean
-    public Candidate candidate() throws UnknownHostException {
-        return new DefaultCandidate(InetAddress.getLocalHost().getHostAddress(), ROLE);
+    public Candidate candidate() {
+        return new DefaultCandidate(UUID.randomUUID().toString(), ROLE);
     }
 
     @Bean
