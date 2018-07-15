@@ -10,3 +10,4 @@ leader-election:
     hazelcast.initial.min.cluster.size: '3'
   kubernetes-service-name: 'leader-election'
   leadership-poll-millis: 5000
+  min-quorum-size: 2

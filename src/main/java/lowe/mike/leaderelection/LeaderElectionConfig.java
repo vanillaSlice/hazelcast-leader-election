@@ -6,17 +6,25 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import com.hazelcast.quorum.QuorumType;
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.hazelcast.leader.LeaderInitiator;
 import org.springframework.integration.leader.Candidate;
 import org.springframework.integration.leader.DefaultCandidate;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class LeaderElectionConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(LeaderElectionConfig.class);
+
+    private static final String ROLE = "leader-election";
 
     @Bean
     public Config config(final LeaderElectionProperties leaderElectionProperties) {
@@ -43,13 +51,18 @@ public class LeaderElectionConfig {
 
         final QuorumConfig quorumConfig = new QuorumConfig()
                 .setEnabled(true)
-                .setName("leader-election")
-                .setSize(4)
+                .setName("default-quorum")
+                .setSize(leaderElectionProperties.getMinQuorumSize())
                 .setType(QuorumType.READ_WRITE);
 
+        final QuorumListenerConfig quorumListenerConfig = new QuorumListenerConfig();
+        quorumListenerConfig.setImplementation(e -> log.info("Quorum present: {}", e.isPresent()));
+
+        quorumConfig.addListenerConfig(quorumListenerConfig);
+
         final LockConfig lockConfig = new LockConfig()
-                .setName("leader-election")
-                .setQuorumName("leader-election");
+                .setName(ROLE)
+                .setQuorumName("default-quorum");
 
         config.addQuorumConfig(quorumConfig)
                 .addLockConfig(lockConfig);
@@ -58,8 +71,8 @@ public class LeaderElectionConfig {
     }
 
     @Bean
-    public Candidate candidate() {
-        return new DefaultCandidate();
+    public Candidate candidate() throws UnknownHostException {
+        return new DefaultCandidate(InetAddress.getLocalHost().getHostAddress(), ROLE);
     }
 
     @Bean

@@ -16,6 +16,8 @@ public class LeaderElectionProperties {
 
     private String kubernetesServiceName = "leader-election";
 
+    private int minQuorumSize = 2;
+
     public Map<String, String> getHazelcastConfigProperties() {
         return hazelcastConfigProperties;
     }
@@ -30,6 +32,14 @@ public class LeaderElectionProperties {
 
     public void setKubernetesServiceName(final String kubernetesServiceName) {
         this.kubernetesServiceName = requireNonNull(kubernetesServiceName);
+    }
+
+    public int getMinQuorumSize() {
+        return minQuorumSize;
+    }
+
+    public void setMinQuorumSize(int minQuorumSize) {
+        this.minQuorumSize = minQuorumSize;
     }
 
 }
