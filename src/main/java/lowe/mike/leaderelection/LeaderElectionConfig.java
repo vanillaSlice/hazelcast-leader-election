@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.hazelcast.leader.LeaderInitiator;
+import org.springframework.integration.hazelcast.lock.HazelcastLockRegistry;
 import org.springframework.integration.leader.Candidate;
 import org.springframework.integration.leader.DefaultCandidate;
+import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,20 +76,13 @@ public class LeaderElectionConfig {
     }
 
     @Bean
-    public LeaderInitiator initiator(final HazelcastInstance hazelcastInstance, final Candidate candidate) {
-        return new LeaderInitiator(hazelcastInstance, candidate);
+    public LockRegistryLeaderInitiator initiator(final HazelcastInstance hazelcastInstance, final Candidate candidate) {
+        return new LockRegistryLeaderInitiator(new HazelcastLockRegistry(hazelcastInstance), candidate);
     }
 
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
-    }
-
-    @Bean
-    public LeaderElectionService leaderElectionService(final LeaderInitiator leaderInitiator,
-                                                       final HazelcastInstance hazelcastInstance,
-                                                       final ObjectMapper objectMapper) {
-        return new LeaderElectionService(leaderInitiator, hazelcastInstance, objectMapper);
     }
 
 }

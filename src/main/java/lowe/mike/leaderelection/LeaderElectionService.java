@@ -5,10 +5,9 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.integration.hazelcast.leader.LeaderInitiator;
+import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -31,23 +30,24 @@ public class LeaderElectionService {
 
     private static final Logger log = LoggerFactory.getLogger(LeaderElectionService.class);
 
-    private final LeaderInitiator leaderInitiator;
+    private final LockRegistryLeaderInitiator leaderInitiator;
 
     private final HazelcastInstance hazelcastInstance;
 
     private final ObjectMapper objectMapper;
 
+    private final BuildProperties buildProperties;
+
     @Value("${management.port}")
     private int managementPort;
 
-    @Autowired
-    private BuildProperties buildProperties;
 
-    public LeaderElectionService(final LeaderInitiator leaderInitiator, final HazelcastInstance hazelcastInstance,
-                                 final ObjectMapper objectMapper) {
+    public LeaderElectionService(final LockRegistryLeaderInitiator leaderInitiator, final HazelcastInstance hazelcastInstance,
+                                 final ObjectMapper objectMapper, final BuildProperties buildProperties) {
         this.leaderInitiator = requireNonNull(leaderInitiator);
         this.hazelcastInstance = requireNonNull(hazelcastInstance);
         this.objectMapper = requireNonNull(objectMapper);
+        this.buildProperties = requireNonNull(buildProperties);
     }
 
     @Scheduled(fixedRateString = "${leader-election.leadership-poll-millis:5000}")
@@ -67,8 +67,11 @@ public class LeaderElectionService {
         final boolean outnumbered = appVersions.entrySet().stream().anyMatch(e -> e.getValue() > currentVersionCount);
 
         if (outnumbered) {
-            log.info("Outnumbered so destroying leader initiator");
+            log.info("Outnumbered by other app versions in cluster");
+            log.info("Destroying leader initiator");
             leaderInitiator.destroy();
+            log.info("Shutting down Hazelcast instance");
+            hazelcastInstance.shutdown();
         }
     }
 
@@ -78,8 +81,8 @@ public class LeaderElectionService {
         hazelcastInstance.getCluster().getMembers().forEach(member -> {
             final Optional<String> memberAppVersion = getMemberAppVersion(member);
             if (memberAppVersion.isPresent()) {
-                appVersions.putIfAbsent(memberAppVersion.get(), 0);
-                appVersions.put(memberAppVersion.get(), appVersions.get(memberAppVersion.get()) + 1);
+                int memberVersionCount = appVersions.getOrDefault(memberAppVersion.get(), 0);
+                appVersions.put(memberAppVersion.get(), memberVersionCount + 1);
             }
         });
 

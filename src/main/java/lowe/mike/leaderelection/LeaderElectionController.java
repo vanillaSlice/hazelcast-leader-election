@@ -1,6 +1,6 @@
 package lowe.mike.leaderelection;
 
-import org.springframework.integration.hazelcast.leader.LeaderInitiator;
+import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,9 +12,9 @@ import static java.util.Objects.requireNonNull;
 @RestController
 public class LeaderElectionController {
 
-    private final LeaderInitiator leaderInitiator;
+    private final LockRegistryLeaderInitiator leaderInitiator;
 
-    public LeaderElectionController(final LeaderInitiator leaderInitiator) {
+    public LeaderElectionController(final LockRegistryLeaderInitiator leaderInitiator) {
         this.leaderInitiator = requireNonNull(leaderInitiator);
     }
 

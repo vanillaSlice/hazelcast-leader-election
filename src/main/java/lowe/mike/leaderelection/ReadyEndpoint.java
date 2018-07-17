@@ -3,7 +3,7 @@ package lowe.mike.leaderelection;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.integration.hazelcast.leader.LeaderInitiator;
+import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -18,9 +18,9 @@ import static java.util.Objects.requireNonNull;
 @Component
 public class ReadyEndpoint implements Endpoint<ResponseEntity<Map<String, Object>>> {
 
-    private final LeaderInitiator leaderInitiator;
+    private final LockRegistryLeaderInitiator leaderInitiator;
 
-    public ReadyEndpoint(final LeaderInitiator leaderInitiator) {
+    public ReadyEndpoint(final LockRegistryLeaderInitiator leaderInitiator) {
         this.leaderInitiator = requireNonNull(leaderInitiator);
     }
 

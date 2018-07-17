@@ -15,5 +15,5 @@ leader-election:
     hazelcast.shutdownhook.policy: 'GRACEFUL'
     hazelcast.phone.home.enabled: 'false'
   kubernetes-service-name: 'leader-election'
-  leadership-poll-millis: 5000
+  leadership-poll-millis: 30000
   min-quorum-size: 2
