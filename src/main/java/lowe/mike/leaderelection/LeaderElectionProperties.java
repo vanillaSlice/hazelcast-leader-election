@@ -8,38 +8,43 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Application properties.
+ *
+ * @author Mike Lowe
+ */
 @Configuration
 @ConfigurationProperties(prefix = "leader-election")
 public class LeaderElectionProperties {
 
-    private Map<String, String> hazelcastConfigProperties = new HashMap<>();
+  private Map<String, String> hazelcastConfigProperties = new HashMap<>();
 
-    private String kubernetesServiceName = "leader-election";
+  private String kubernetesServiceName = "leader-election";
 
-    private int minQuorumSize = 2;
+  private int minQuorumSize = 2;
 
-    public Map<String, String> getHazelcastConfigProperties() {
-        return hazelcastConfigProperties;
-    }
+  public Map<String, String> getHazelcastConfigProperties() {
+    return hazelcastConfigProperties;
+  }
 
-    public void setHazelcastConfigProperties(final Map<String, String> hazelcastConfigProperties) {
-        this.hazelcastConfigProperties = requireNonNull(hazelcastConfigProperties);
-    }
+  public void setHazelcastConfigProperties(final Map<String, String> hazelcastConfigProperties) {
+    this.hazelcastConfigProperties = requireNonNull(hazelcastConfigProperties);
+  }
 
-    public String getKubernetesServiceName() {
-        return kubernetesServiceName;
-    }
+  public String getKubernetesServiceName() {
+    return kubernetesServiceName;
+  }
 
-    public void setKubernetesServiceName(final String kubernetesServiceName) {
-        this.kubernetesServiceName = requireNonNull(kubernetesServiceName);
-    }
+  public void setKubernetesServiceName(final String kubernetesServiceName) {
+    this.kubernetesServiceName = requireNonNull(kubernetesServiceName);
+  }
 
-    public int getMinQuorumSize() {
-        return minQuorumSize;
-    }
+  public int getMinQuorumSize() {
+    return minQuorumSize;
+  }
 
-    public void setMinQuorumSize(int minQuorumSize) {
-        this.minQuorumSize = minQuorumSize;
-    }
+  public void setMinQuorumSize(final int minQuorumSize) {
+    this.minQuorumSize = minQuorumSize;
+  }
 
 }

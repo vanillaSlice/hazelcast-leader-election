@@ -9,18 +9,23 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Application controller.
+ *
+ * @author Mike Lowe
+ */
 @RestController
 public class LeaderElectionController {
 
-    private final LockRegistryLeaderInitiator leaderInitiator;
+  private final LockRegistryLeaderInitiator leaderInitiator;
 
-    public LeaderElectionController(final LockRegistryLeaderInitiator leaderInitiator) {
-        this.leaderInitiator = requireNonNull(leaderInitiator);
-    }
+  public LeaderElectionController(final LockRegistryLeaderInitiator leaderInitiator) {
+    this.leaderInitiator = requireNonNull(leaderInitiator);
+  }
 
-    @GetMapping("/leader")
-    public Map<String, Object> leader() {
-        return Collections.singletonMap("leader", leaderInitiator.getContext().isLeader());
-    }
+  @GetMapping("/leader")
+  public Map<String, Object> leader() {
+    return Collections.singletonMap("leader", leaderInitiator.getContext().isLeader());
+  }
 
 }

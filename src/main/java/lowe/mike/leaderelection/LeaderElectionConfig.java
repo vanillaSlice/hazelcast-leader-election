@@ -1,7 +1,12 @@
 package lowe.mike.leaderelection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.config.*;
+import com.hazelcast.config.Config;
+import com.hazelcast.config.DiscoveryStrategyConfig;
+import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.LockConfig;
+import com.hazelcast.config.QuorumConfig;
+import com.hazelcast.config.QuorumListenerConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import com.hazelcast.quorum.QuorumType;
@@ -19,70 +24,75 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Application config.
+ *
+ * @author Mike Lowe
+ */
 @Configuration
 public class LeaderElectionConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(LeaderElectionConfig.class);
+  private static final Logger logger = LoggerFactory.getLogger(LeaderElectionConfig.class);
 
-    private static final String ROLE = "leader-election";
+  private static final String ROLE = "leader-election";
 
-    @Bean
-    public Config config(final LeaderElectionProperties leaderElectionProperties) {
-        final Config config = new Config();
+  @Bean
+  public Config config(final LeaderElectionProperties leaderElectionProperties) {
+    final Config config = new Config();
 
-        config.getProperties().putAll(leaderElectionProperties.getHazelcastConfigProperties());
+    config.getProperties().putAll(leaderElectionProperties.getHazelcastConfigProperties());
 
-        final JoinConfig joinConfig = config.getNetworkConfig().getJoin();
+    final JoinConfig joinConfig = config.getNetworkConfig().getJoin();
 
-        joinConfig.getMulticastConfig().setEnabled(false);
-        joinConfig.getTcpIpConfig().setEnabled(false);
-        joinConfig.getAwsConfig().setEnabled(false);
+    joinConfig.getMulticastConfig().setEnabled(false);
+    joinConfig.getTcpIpConfig().setEnabled(false);
+    joinConfig.getAwsConfig().setEnabled(false);
 
-        final DiscoveryStrategyFactory discoveryStrategyFactory = new HazelcastKubernetesDiscoveryStrategyFactory();
+    final DiscoveryStrategyFactory discoveryStrategyFactory = new HazelcastKubernetesDiscoveryStrategyFactory();
 
-        final Map<String, Comparable> discoverStrategyProperties = new HashMap<>();
-        discoverStrategyProperties.put("service-name", leaderElectionProperties.getKubernetesServiceName());
-        discoverStrategyProperties.put("resolve-not-ready-addresses", true);
+    final Map<String, Comparable> discoverStrategyProperties = new HashMap<>();
+    discoverStrategyProperties.put("service-name", leaderElectionProperties.getKubernetesServiceName());
+    discoverStrategyProperties.put("resolve-not-ready-addresses", true);
 
-        final DiscoveryStrategyConfig discoveryStrategyConfig = new DiscoveryStrategyConfig(discoveryStrategyFactory,
-                discoverStrategyProperties);
+    final DiscoveryStrategyConfig discoveryStrategyConfig =
+        new DiscoveryStrategyConfig(discoveryStrategyFactory, discoverStrategyProperties);
 
-        joinConfig.getDiscoveryConfig().addDiscoveryStrategyConfig(discoveryStrategyConfig);
+    joinConfig.getDiscoveryConfig().addDiscoveryStrategyConfig(discoveryStrategyConfig);
 
-        final QuorumConfig quorumConfig = new QuorumConfig()
-                .setEnabled(true)
-                .setName("default-quorum")
-                .setSize(leaderElectionProperties.getMinQuorumSize())
-                .setType(QuorumType.READ_WRITE);
+    final QuorumConfig quorumConfig = new QuorumConfig()
+        .setEnabled(true)
+        .setName("default-quorum")
+        .setSize(leaderElectionProperties.getMinQuorumSize())
+        .setType(QuorumType.READ_WRITE);
 
-        final QuorumListenerConfig quorumListenerConfig = new QuorumListenerConfig();
-        quorumListenerConfig.setImplementation(e -> log.info("Quorum present: {}", e.isPresent()));
+    final QuorumListenerConfig quorumListenerConfig = new QuorumListenerConfig();
+    quorumListenerConfig.setImplementation(e -> logger.info("Quorum present: {}", e.isPresent()));
 
-        quorumConfig.addListenerConfig(quorumListenerConfig);
+    quorumConfig.addListenerConfig(quorumListenerConfig);
 
-        final LockConfig lockConfig = new LockConfig()
-                .setName(ROLE)
-                .setQuorumName("default-quorum");
+    final LockConfig lockConfig = new LockConfig()
+        .setName(ROLE)
+        .setQuorumName("default-quorum");
 
-        config.addQuorumConfig(quorumConfig)
-                .addLockConfig(lockConfig);
+    config.addQuorumConfig(quorumConfig)
+        .addLockConfig(lockConfig);
 
-        return config;
-    }
+    return config;
+  }
 
-    @Bean
-    public Candidate candidate() {
-        return new DefaultCandidate(UUID.randomUUID().toString(), ROLE);
-    }
+  @Bean
+  public Candidate candidate() {
+    return new DefaultCandidate(UUID.randomUUID().toString(), ROLE);
+  }
 
-    @Bean
-    public LockRegistryLeaderInitiator initiator(final HazelcastInstance hazelcastInstance, final Candidate candidate) {
-        return new LockRegistryLeaderInitiator(new HazelcastLockRegistry(hazelcastInstance), candidate);
-    }
+  @Bean
+  public LockRegistryLeaderInitiator initiator(final HazelcastInstance hazelcastInstance, final Candidate candidate) {
+    return new LockRegistryLeaderInitiator(new HazelcastLockRegistry(hazelcastInstance), candidate);
+  }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 
 }

@@ -14,38 +14,40 @@ import static java.util.Objects.requireNonNull;
 /**
  * Readiness endpoint returns a 200 status code if this member is the leader otherwise
  * a 503 status code is returned.
+ *
+ * @author Mike Lowe
  */
 @Component
 public class ReadyEndpoint implements Endpoint<ResponseEntity<Map<String, Object>>> {
 
-    private final LockRegistryLeaderInitiator leaderInitiator;
+  private final LockRegistryLeaderInitiator leaderInitiator;
 
-    public ReadyEndpoint(final LockRegistryLeaderInitiator leaderInitiator) {
-        this.leaderInitiator = requireNonNull(leaderInitiator);
-    }
+  public ReadyEndpoint(final LockRegistryLeaderInitiator leaderInitiator) {
+    this.leaderInitiator = requireNonNull(leaderInitiator);
+  }
 
-    @Override
-    public String getId() {
-        return "ready";
-    }
+  @Override
+  public String getId() {
+    return "ready";
+  }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 
-    @Override
-    public boolean isSensitive() {
-        return false;
-    }
+  @Override
+  public boolean isSensitive() {
+    return false;
+  }
 
-    @Override
-    public ResponseEntity<Map<String, Object>> invoke() {
-        if (leaderInitiator.getContext().isLeader()) {
-            return new ResponseEntity<>(Collections.singletonMap("leader", true), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(Collections.singletonMap("leader", false), HttpStatus.SERVICE_UNAVAILABLE);
-        }
+  @Override
+  public ResponseEntity<Map<String, Object>> invoke() {
+    if (leaderInitiator.getContext().isLeader()) {
+      return new ResponseEntity<>(Collections.singletonMap("leader", true), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(Collections.singletonMap("leader", false), HttpStatus.SERVICE_UNAVAILABLE);
     }
+  }
 
 }

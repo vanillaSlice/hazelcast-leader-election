@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-path=$(dirname "$0")
+WORKING_DIR=$(dirname "$0")
 
-kubectl apply -f $path/cluster-role-binding.yaml
-kubectl apply -f $path/service.yaml
-kubectl apply -f $path/deployment.yaml
+kubectl apply -f $WORKING_DIR/cluster-role-binding.yaml
+kubectl apply -f $WORKING_DIR/service.yaml
+kubectl apply -f $WORKING_DIR/deployment.yaml

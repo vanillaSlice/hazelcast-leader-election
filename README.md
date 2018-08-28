@@ -1,6 +1,6 @@
-# Leader Election
+# Hazelcast Leader Election
 
-Playing around with leadership election with Hazelcast and Kubernetes (minikube).
+Playing around with leadership election with [Hazelcast](https://hazelcast.com/) and [Kubernetes](https://kubernetes.io/) (minikube).
 
 To create the initial deployment:
 ```
