@@ -11,6 +11,9 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import com.hazelcast.quorum.QuorumType;
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +22,6 @@ import org.springframework.integration.hazelcast.lock.HazelcastLockRegistry;
 import org.springframework.integration.leader.Candidate;
 import org.springframework.integration.leader.DefaultCandidate;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Application config.
@@ -36,6 +35,9 @@ public class LeaderElectionConfig {
 
   private static final String ROLE = "leader-election";
 
+  /**
+   * Hazelcast config.
+   */
   @Bean
   public Config config(final LeaderElectionProperties leaderElectionProperties) {
     final Config config = new Config();
@@ -48,10 +50,12 @@ public class LeaderElectionConfig {
     joinConfig.getTcpIpConfig().setEnabled(false);
     joinConfig.getAwsConfig().setEnabled(false);
 
-    final DiscoveryStrategyFactory discoveryStrategyFactory = new HazelcastKubernetesDiscoveryStrategyFactory();
+    final DiscoveryStrategyFactory discoveryStrategyFactory =
+        new HazelcastKubernetesDiscoveryStrategyFactory();
 
     final Map<String, Comparable> discoverStrategyProperties = new HashMap<>();
-    discoverStrategyProperties.put("service-name", leaderElectionProperties.getKubernetesServiceName());
+    discoverStrategyProperties
+        .put("service-name", leaderElectionProperties.getKubernetesServiceName());
     discoverStrategyProperties.put("resolve-not-ready-addresses", true);
 
     final DiscoveryStrategyConfig discoveryStrategyConfig =
@@ -86,7 +90,8 @@ public class LeaderElectionConfig {
   }
 
   @Bean
-  public LockRegistryLeaderInitiator initiator(final HazelcastInstance hazelcastInstance, final Candidate candidate) {
+  public LockRegistryLeaderInitiator initiator(final HazelcastInstance hazelcastInstance,
+      final Candidate candidate) {
     return new LockRegistryLeaderInitiator(new HazelcastLockRegistry(hazelcastInstance), candidate);
   }
 
@@ -94,5 +99,4 @@ public class LeaderElectionConfig {
   public ObjectMapper objectMapper() {
     return new ObjectMapper();
   }
-
 }

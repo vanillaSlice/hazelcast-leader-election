@@ -1,12 +1,11 @@
 package lowe.mike.leaderelection;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import static java.util.Objects.requireNonNull;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Objects.requireNonNull;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Application properties.
@@ -46,5 +45,4 @@ public class LeaderElectionProperties {
   public void setMinQuorumSize(final int minQuorumSize) {
     this.minQuorumSize = minQuorumSize;
   }
-
 }

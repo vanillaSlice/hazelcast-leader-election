@@ -1,8 +1,15 @@
 package lowe.mike.leaderelection;
 
+import static java.util.Objects.requireNonNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,19 +18,12 @@ import org.springframework.integration.support.leader.LockRegistryLeaderInitiato
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static java.util.Objects.requireNonNull;
-
 /**
  * Service to determine whether the current leader should yield the leadership. The current leader
  * should yield leadership if it is outnumbered in the cluster by members with a different version
  * number. For example, if the cluster consists of three nodes and the current leader has a version
- * 1.0 and there are two nodes with version 1.1, then the current leader should yield its leadership.
+ * 1.0 and there are two nodes with version 1.1, then the current leader should yield its
+ * leadership.
  *
  * @author Mike Lowe
  */
@@ -43,6 +43,9 @@ public class LeaderElectionService {
   @Value("${management.port}")
   private int managementPort;
 
+  /**
+   * Creates a new LeaderElectionService.
+   */
   public LeaderElectionService(final LockRegistryLeaderInitiator leaderInitiator,
       final HazelcastInstance hazelcastInstance, final ObjectMapper objectMapper,
       final BuildProperties buildProperties) {
@@ -52,6 +55,9 @@ public class LeaderElectionService {
     this.buildProperties = requireNonNull(buildProperties);
   }
 
+  /**
+   * Revokes leadership if outnumbered.
+   */
   @Scheduled(fixedRateString = "${leader-election.leadership-poll-millis:5000}")
   public void revokeLeadershipIfOutnumbered() throws Exception {
     // not leader so don't need to do anything
@@ -66,7 +72,8 @@ public class LeaderElectionService {
     final String currentVersion = buildProperties.getVersion();
     final int currentVersionCount = appVersions.get(currentVersion);
 
-    final boolean outnumbered = appVersions.entrySet().stream().anyMatch(e -> e.getValue() > currentVersionCount);
+    final boolean outnumbered = appVersions.entrySet().stream()
+        .anyMatch(e -> e.getValue() > currentVersionCount);
 
     if (outnumbered) {
       log.info("Outnumbered by other app versions in cluster");
@@ -93,11 +100,13 @@ public class LeaderElectionService {
 
   @SuppressWarnings("unchecked")
   private Optional<String> getMemberAppVersion(final Member member) {
-    final String infoEndpoint = "http://" + member.getSocketAddress().getHostName() + ":" + managementPort + "/info";
-
+    final String infoEndpoint =
+        "http://" + member.getSocketAddress().getHostName() + ":" + managementPort + "/info";
     try {
-      final Map<String, Object> response = objectMapper.readValue(new URL(infoEndpoint), Map.class);
-      final Map<String, Object> build = (Map<String, Object>) response.getOrDefault("build", Collections.emptyMap());
+      final Map<String, Object> response = objectMapper
+          .readValue(new URL(infoEndpoint), Map.class);
+      final Map<String, Object> build =
+          (Map<String, Object>) response.getOrDefault("build", Collections.emptyMap());
       final String version = build.getOrDefault("version", "").toString();
       return version.isEmpty() ? Optional.empty() : Optional.of(version);
     } catch (final Exception e) {
@@ -106,5 +115,4 @@ public class LeaderElectionService {
 
     return Optional.empty();
   }
-
 }
