@@ -14,5 +14,4 @@ public class LeaderElectionApplication {
   public static void main(final String[] args) {
     SpringApplication.run(LeaderElectionApplication.class, args);
   }
-
 }
