@@ -1,5 +1,7 @@
 # Hazelcast Leader Election
 
+[![Build Status](https://img.shields.io/travis/vanillaSlice/hazelcast-leader-election/master.svg)](https://travis-ci.org/vanillaSlice/hazelcast-leader-election)
+
 Playing around with leadership election with [Hazelcast](https://hazelcast.com/) and [Kubernetes](https://kubernetes.io/) (minikube).
 
 To create the initial deployment:
