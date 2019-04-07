@@ -13,7 +13,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
-      maxUnavailable: 2
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -24,7 +24,13 @@ spec:
           name: leader-election
           ports:
             - containerPort: 7080
+            - containerPort: 7081
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 7080
+              path: /actuator/health
+              port: 7081
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 7081
+            initialDelaySeconds: 300
