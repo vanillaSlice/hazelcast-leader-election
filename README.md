@@ -5,19 +5,13 @@
 
 Playing around with leadership election with [Hazelcast](https://hazelcast.com/) and [Kubernetes](https://kubernetes.io/) (minikube).
 
-To create the initial deployment:
-```
-eval $(minikube docker-env)
-gradle buildDockerImage
-./deployment/create.sh
-```
+To create the initial deployment/perform updates:
 
-To perform updates:
 ```
-./deployment/apply.sh
+kubectl apply -f ./deployment
 ```
 
 To delete deployment:
 ```
-./deployment/delete.sh
+kubectl delete -f ./deployment
 ```

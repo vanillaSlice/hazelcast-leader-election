@@ -1,7 +1,6 @@
 buildscript {
     ext {
         springBootVersion = '1.5.14.RELEASE'
-        gradleDockerVersion = '1.2'
     }
     repositories {
         mavenCentral()
@@ -9,7 +8,6 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "se.transmode.gradle:gradle-docker:${gradleDockerVersion}"
     }
 }
 
@@ -20,7 +18,6 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'docker'
 
 group = 'lowe.mike'
 sourceCompatibility = 1.8
@@ -47,16 +44,4 @@ springBoot {
 checkstyle {
     toolVersion = '8.19'
     maxWarnings = 0
-}
-
-docker {
-    baseImage "openjdk:8-jdk-alpine"
-}
-
-task buildDockerImage(type: Docker) {
-    dependsOn build
-    applicationName = "leader-election"
-    volume("/tmp")
-    addFile("./build/libs/${applicationName}-${version}.jar", "app.jar")
-    entryPoint(["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"])
 }
