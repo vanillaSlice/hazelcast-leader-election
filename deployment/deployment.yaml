@@ -20,7 +20,7 @@ spec:
         app: leader-election
     spec:
       containers:
-        - image: lowe.mike/leader-election:1.0.0
+        - image: vanillaslice/leader-election:1.0.0
           name: leader-election
           ports:
             - containerPort: 7080
