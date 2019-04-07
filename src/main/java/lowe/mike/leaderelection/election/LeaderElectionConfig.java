@@ -15,17 +15,26 @@ import org.springframework.integration.support.locks.LockRegistry;
 @Configuration
 public class LeaderElectionConfig {
 
+  /**
+   * Candidate.
+   */
   @Bean
   public Candidate candidate(@Value("${spring.application.name}") String applicationName) {
     return new LeaderElectionCandidate(applicationName);
   }
 
+  /**
+   * Leader initiator.
+   */
   @Bean
   public LockRegistryLeaderInitiator leaderInitiator(LockRegistry lockRegistry,
       Candidate candidate) {
     return new LockRegistryLeaderInitiator(lockRegistry, candidate);
   }
 
+  /**
+   * Leader service.
+   */
   @Bean
   public LeaderService leaderService(LockRegistryLeaderInitiator leaderInitiator) {
     return new LockRegistryLeaderService(leaderInitiator);
