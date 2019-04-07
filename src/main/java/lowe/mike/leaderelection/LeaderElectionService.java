@@ -40,7 +40,7 @@ public class LeaderElectionService {
 
   private final BuildProperties buildProperties;
 
-  @Value("${management.port}")
+  @Value("${management.server.port}")
   private int managementPort;
 
   /**
@@ -101,7 +101,8 @@ public class LeaderElectionService {
   @SuppressWarnings("unchecked")
   private Optional<String> getMemberAppVersion(final Member member) {
     final String infoEndpoint =
-        "http://" + member.getSocketAddress().getHostName() + ":" + managementPort + "/info";
+        "http://" + member.getSocketAddress().getHostName() + ":" + managementPort
+            + "/actuator/info";
     try {
       final Map<String, Object> response = objectMapper
           .readValue(new URL(infoEndpoint), Map.class);

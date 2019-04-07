@@ -20,11 +20,11 @@ spec:
         app: leader-election
     spec:
       containers:
-        - image: vanillaslice/leader-election:1.0.0
+        - image: vanillaslice/leader-election
           name: leader-election
           ports:
             - containerPort: 7080
           readinessProbe:
             httpGet:
               path: /ready
-              port: 7081
+              port: 7080

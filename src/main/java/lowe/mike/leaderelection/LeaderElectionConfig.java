@@ -2,17 +2,12 @@ package lowe.mike.leaderelection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.config.Config;
-import com.hazelcast.config.DiscoveryStrategyConfig;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.LockConfig;
 import com.hazelcast.config.QuorumConfig;
 import com.hazelcast.config.QuorumListenerConfig;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import com.hazelcast.quorum.QuorumType;
-import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,21 +42,10 @@ public class LeaderElectionConfig {
     final JoinConfig joinConfig = config.getNetworkConfig().getJoin();
 
     joinConfig.getMulticastConfig().setEnabled(false);
-    joinConfig.getTcpIpConfig().setEnabled(false);
-    joinConfig.getAwsConfig().setEnabled(false);
-
-    final DiscoveryStrategyFactory discoveryStrategyFactory =
-        new HazelcastKubernetesDiscoveryStrategyFactory();
-
-    final Map<String, Comparable> discoverStrategyProperties = new HashMap<>();
-    discoverStrategyProperties
-        .put("service-name", leaderElectionProperties.getKubernetesServiceName());
-    discoverStrategyProperties.put("resolve-not-ready-addresses", true);
-
-    final DiscoveryStrategyConfig discoveryStrategyConfig =
-        new DiscoveryStrategyConfig(discoveryStrategyFactory, discoverStrategyProperties);
-
-    joinConfig.getDiscoveryConfig().addDiscoveryStrategyConfig(discoveryStrategyConfig);
+    joinConfig.getKubernetesConfig().setEnabled(true)
+        .setProperty("namespace", "default")
+        .setProperty("service-name", leaderElectionProperties.getKubernetesServiceName())
+        .setProperty("resolve-not-ready-addresses", "true");
 
     final QuorumConfig quorumConfig = new QuorumConfig()
         .setEnabled(true)
