@@ -6,6 +6,9 @@ spec:
   selector:
     app: leader-election
   ports:
-    - port: 80
+    - name: http
       protocol: TCP
+      port: 80
       targetPort: 7080
+    - name: hazelcast
+      port: 5701

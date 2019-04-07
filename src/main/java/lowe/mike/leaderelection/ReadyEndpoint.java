@@ -4,11 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
 import java.util.Map;
-import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Readiness endpoint returns a 200 status code if this member is the leader otherwise a 503 status
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Mike Lowe
  */
-@Component
-public class ReadyEndpoint implements Endpoint<ResponseEntity<Map<String, Object>>> {
+@RestController
+public class ReadyEndpoint {
 
   private final LockRegistryLeaderInitiator leaderInitiator;
 
@@ -25,23 +25,11 @@ public class ReadyEndpoint implements Endpoint<ResponseEntity<Map<String, Object
     this.leaderInitiator = requireNonNull(leaderInitiator);
   }
 
-  @Override
-  public String getId() {
-    return "ready";
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
-
-  @Override
-  public boolean isSensitive() {
-    return false;
-  }
-
-  @Override
-  public ResponseEntity<Map<String, Object>> invoke() {
+  /**
+   * Invoke endpoint.
+   */
+  @GetMapping("/ready")
+  public ResponseEntity<Map<String, Object>> ready() {
     if (leaderInitiator.getContext().isLeader()) {
       return new ResponseEntity<>(Collections.singletonMap("leader", true), HttpStatus.OK);
     } else {
