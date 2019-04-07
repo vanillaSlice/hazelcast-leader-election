@@ -1,27 +1,26 @@
 buildscript {
-    ext {
-        springBootVersion = '1.5.14.RELEASE'
-    }
     repositories {
         mavenCentral()
-        jcenter()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.14.RELEASE')
     }
 }
 
 plugins {
+    id 'java'
+    id 'idea'
     id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
-group = 'lowe.mike'
-sourceCompatibility = 1.8
+group = 'lowe.mike.leaderelection'
 version = '1.0.0'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -45,3 +44,27 @@ checkstyle {
     toolVersion = '8.19'
     maxWarnings = 0
 }
+
+jacoco {
+    toolVersion = '0.8.3'
+}
+
+jacocoTestReport {
+    executionData fileTree(project.rootDir.absolutePath).include('**/build/jacoco/*.exec')
+    reports {
+        xml.enabled = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    executionData fileTree(project.rootDir.absolutePath).include('**/build/jacoco/*.exec')
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.9
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
