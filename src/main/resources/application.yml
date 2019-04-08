@@ -15,6 +15,7 @@ hazelcast:
     namespace: default
     service-name: leader-election
   min-quorum-size: 2
+  quorum-enabled: true
   system-properties:
     # These are Hazelcast system properties described here:
     # https://docs.hazelcast.org/docs/3.11.2/manual/html-single/index.html#system-properties

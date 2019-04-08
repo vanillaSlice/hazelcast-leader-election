@@ -21,6 +21,8 @@ public class HazelcastProperties {
 
   private int minQuorumSize = 2;
 
+  private boolean quorumEnabled = true;
+
   private Map<String, String> systemProperties = new HashMap<>();
 
   public Kubernetes getKubernetes() {
@@ -37,6 +39,14 @@ public class HazelcastProperties {
 
   public void setMinQuorumSize(int minQuorumSize) {
     this.minQuorumSize = minQuorumSize;
+  }
+
+  public boolean isQuorumEnabled() {
+    return quorumEnabled;
+  }
+
+  public void setQuorumEnabled(boolean quorumEnabled) {
+    this.quorumEnabled = quorumEnabled;
   }
 
   public Map<String, String> getSystemProperties() {
@@ -118,13 +128,14 @@ public class HazelcastProperties {
     }
     HazelcastProperties that = (HazelcastProperties) o;
     return minQuorumSize == that.minQuorumSize
+        && quorumEnabled == that.quorumEnabled
         && Objects.equals(kubernetes, that.kubernetes)
         && Objects.equals(systemProperties, that.systemProperties);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(kubernetes, minQuorumSize, systemProperties);
+    return Objects.hash(kubernetes, minQuorumSize, quorumEnabled, systemProperties);
   }
 
   @Override
@@ -132,6 +143,7 @@ public class HazelcastProperties {
     return "HazelcastProperties{"
         + "kubernetes=" + kubernetes
         + ", minQuorumSize=" + minQuorumSize
+        + ", quorumEnabled=" + quorumEnabled
         + ", systemProperties=" + systemProperties
         + '}';
   }

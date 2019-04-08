@@ -37,8 +37,12 @@ public class HazelcastConfig {
 
     config.getProperties().putAll(properties.getSystemProperties());
     config.getNetworkConfig().setJoin(joinConfig);
-    config.addQuorumConfig(quorumConfig)
-        .addLockConfig(lockConfig);
+
+    if (properties.isQuorumEnabled()) {
+      config.addQuorumConfig(quorumConfig);
+    }
+
+    config.addLockConfig(lockConfig);
 
     return config;
   }
