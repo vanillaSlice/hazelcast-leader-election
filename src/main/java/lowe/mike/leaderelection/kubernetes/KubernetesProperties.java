@@ -16,7 +16,17 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "kubernetes")
 public class KubernetesProperties {
 
+  private boolean enabled = true;
+
   private Duration endpointsRefresh = Duration.ofSeconds(15);
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
 
   public Duration getEndpointsRefresh() {
     return endpointsRefresh;
@@ -35,18 +45,20 @@ public class KubernetesProperties {
       return false;
     }
     KubernetesProperties that = (KubernetesProperties) o;
-    return Objects.equals(endpointsRefresh, that.endpointsRefresh);
+    return enabled == that.enabled
+        && Objects.equals(endpointsRefresh, that.endpointsRefresh);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(endpointsRefresh);
+    return Objects.hash(enabled, endpointsRefresh);
   }
 
   @Override
   public String toString() {
     return "KubernetesProperties{"
-        + "endpointsRefresh='" + endpointsRefresh + '\''
+        + "enabled=" + enabled
+        + ", endpointsRefresh=" + endpointsRefresh
         + '}';
   }
 }
