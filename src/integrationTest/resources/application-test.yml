@@ -1,5 +1,6 @@
 hazelcast:
   kubernetes:
     enabled: false
+  quorum-enabled: false
   system-properties:
     hazelcast.initial.min.cluster.size: '1'
