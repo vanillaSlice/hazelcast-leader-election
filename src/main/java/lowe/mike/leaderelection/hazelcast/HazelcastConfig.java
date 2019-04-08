@@ -50,12 +50,13 @@ public class HazelcastConfig {
   public JoinConfig joinConfig(HazelcastProperties properties) {
     JoinConfig joinConfig = new JoinConfig();
 
-    joinConfig.getMulticastConfig().setEnabled(false);
-
-    joinConfig.getKubernetesConfig().setEnabled(true)
-        .setProperty("namespace", properties.getKubernetes().getNamespace())
-        .setProperty("service-name", properties.getKubernetes().getServiceName())
-        .setProperty("resolve-not-ready-addresses", "true");
+    if (properties.getKubernetes().isEnabled()) {
+      joinConfig.getMulticastConfig().setEnabled(false);
+      joinConfig.getKubernetesConfig().setEnabled(true)
+          .setProperty("namespace", properties.getKubernetes().getNamespace())
+          .setProperty("service-name", properties.getKubernetes().getServiceName())
+          .setProperty("resolve-not-ready-addresses", "true");
+    }
 
     return joinConfig;
   }

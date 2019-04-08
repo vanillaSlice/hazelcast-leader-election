@@ -49,9 +49,19 @@ public class HazelcastProperties {
 
   public static class Kubernetes {
 
+    private boolean enabled = true;
+
     private String namespace = "default";
 
     private String serviceName = "leader-election";
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
 
     public String getNamespace() {
       return namespace;
@@ -78,19 +88,21 @@ public class HazelcastProperties {
         return false;
       }
       Kubernetes that = (Kubernetes) o;
-      return Objects.equals(namespace, that.namespace)
+      return enabled == that.enabled
+          && Objects.equals(namespace, that.namespace)
           && Objects.equals(serviceName, that.serviceName);
     }
 
     @Override
     public final int hashCode() {
-      return Objects.hash(namespace, serviceName);
+      return Objects.hash(enabled, namespace, serviceName);
     }
 
     @Override
     public String toString() {
       return "Kubernetes{"
-          + "namespace='" + namespace + '\''
+          + "enabled=" + enabled
+          + ", namespace='" + namespace + '\''
           + ", serviceName='" + serviceName + '\''
           + '}';
     }
