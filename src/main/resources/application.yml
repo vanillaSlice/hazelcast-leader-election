@@ -11,6 +11,7 @@ management:
 
 hazelcast:
   kubernetes:
+    enabled: true
     namespace: default
     service-name: leader-election
   min-quorum-size: 2

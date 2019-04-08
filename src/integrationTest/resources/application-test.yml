@@ -1,0 +1,5 @@
+hazelcast:
+  kubernetes:
+    enabled: false
+  system-properties:
+    hazelcast.initial.min.cluster.size: '1'
