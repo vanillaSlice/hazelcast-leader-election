@@ -26,4 +26,5 @@ hazelcast:
     hazelcast.shutdownhook.policy: 'GRACEFUL'
 
 kubernetes:
+  enabled: true
   endpoints-refresh: 15s

@@ -2,6 +2,7 @@ package lowe.mike.leaderelection.kubernetes;
 
 import lowe.mike.leaderelection.election.LeaderChangeSender;
 import lowe.mike.leaderelection.election.LeaderService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -15,6 +16,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration
 @EnableScheduling
+@ConditionalOnProperty(
+    prefix = "kubernetes",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true
+)
 public class KubernetesConfig {
 
   /**
