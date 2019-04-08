@@ -7,7 +7,6 @@ import com.hazelcast.config.QuorumConfig;
 import com.hazelcast.config.QuorumListenerConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.quorum.QuorumType;
-import lowe.mike.leaderelection.kubernetes.KubernetesProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,14 +47,14 @@ public class HazelcastConfig {
    * Join config.
    */
   @Bean
-  public JoinConfig joinConfig(KubernetesProperties properties) {
+  public JoinConfig joinConfig(HazelcastProperties properties) {
     JoinConfig joinConfig = new JoinConfig();
 
     joinConfig.getMulticastConfig().setEnabled(false);
 
     joinConfig.getKubernetesConfig().setEnabled(true)
-        .setProperty("namespace", properties.getNamespace())
-        .setProperty("service-name", properties.getServiceName())
+        .setProperty("namespace", properties.getKubernetes().getNamespace())
+        .setProperty("service-name", properties.getKubernetes().getServiceName())
         .setProperty("resolve-not-ready-addresses", "true");
 
     return joinConfig;
