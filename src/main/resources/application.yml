@@ -10,6 +10,9 @@ management:
     port: 7081
 
 hazelcast:
+  kubernetes:
+    namespace: default
+    service-name: leader-election
   min-quorum-size: 2
   system-properties:
     # These are Hazelcast system properties described here:
@@ -21,6 +24,4 @@ hazelcast:
     hazelcast.shutdownhook.policy: 'GRACEFUL'
 
 kubernetes:
-  namespace: default
-  service-name: leader-election
   endpoints-refresh: 15s

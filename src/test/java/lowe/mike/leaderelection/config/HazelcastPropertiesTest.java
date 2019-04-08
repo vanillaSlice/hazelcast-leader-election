@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import lowe.mike.leaderelection.hazelcast.HazelcastProperties;
+import lowe.mike.leaderelection.hazelcast.HazelcastProperties.Kubernetes;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,5 +32,39 @@ public class HazelcastPropertiesTest {
     EqualsVerifier.forClass(HazelcastProperties.class)
         .suppress(Warning.NONFINAL_FIELDS)
         .verify();
+  }
+
+  /**
+   * {@link Kubernetes} unit tests.
+   *
+   * @author Mike Lowe
+   */
+  @Nested
+  public class KubernetesTest {
+
+    private final Kubernetes kubernetes = new Kubernetes();
+
+    @Test
+    public void setNamespace_null_throwsNullPointerException() {
+      Exception exception = assertThrows(NullPointerException.class,
+          () -> kubernetes.setNamespace(null));
+
+      assertEquals("namespace is null", exception.getMessage());
+    }
+
+    @Test
+    public void setServiceName_null_throwsNullPointerException() {
+      Exception exception = assertThrows(NullPointerException.class,
+          () -> kubernetes.setServiceName(null));
+
+      assertEquals("serviceName is null", exception.getMessage());
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+      EqualsVerifier.forClass(Kubernetes.class)
+          .suppress(Warning.NONFINAL_FIELDS)
+          .verify();
+    }
   }
 }
