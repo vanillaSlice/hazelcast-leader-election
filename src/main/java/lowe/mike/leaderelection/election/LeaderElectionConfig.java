@@ -1,6 +1,7 @@
 package lowe.mike.leaderelection.election;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.leader.Candidate;
@@ -15,13 +16,7 @@ import org.springframework.integration.support.locks.LockRegistry;
 @Configuration
 public class LeaderElectionConfig {
 
-  /**
-   * Candidate.
-   */
-  @Bean
-  public Candidate candidate(@Value("${spring.application.name}") String applicationName) {
-    return new LeaderElectionCandidate(applicationName);
-  }
+  private static final Logger logger = LoggerFactory.getLogger(LeaderElectionConfig.class);
 
   /**
    * Leader initiator.
@@ -29,14 +24,8 @@ public class LeaderElectionConfig {
   @Bean
   public LockRegistryLeaderInitiator leaderInitiator(LockRegistry lockRegistry,
       Candidate candidate) {
-    return new LockRegistryLeaderInitiator(lockRegistry, candidate);
-  }
+    logger.info("Creating LockRegistryLeaderInitiator");
 
-  /**
-   * Leader service.
-   */
-  @Bean
-  public LeaderService leaderService(LockRegistryLeaderInitiator leaderInitiator) {
-    return new LockRegistryLeaderService(leaderInitiator);
+    return new LockRegistryLeaderInitiator(lockRegistry, candidate);
   }
 }

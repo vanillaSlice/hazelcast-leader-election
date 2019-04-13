@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Mike Lowe
  */
 @Configuration
-@ConfigurationProperties(prefix = "hazelcast")
+@ConfigurationProperties(prefix = "leader-election.hazelcast")
 public class HazelcastProperties {
 
   private Kubernetes kubernetes = new Kubernetes();
@@ -63,7 +63,7 @@ public class HazelcastProperties {
 
     private String namespace = "default";
 
-    private String serviceName = "leader-election";
+    private String serviceName = "leader-election-hazelcast-discovery";
 
     public boolean isEnabled() {
       return enabled;

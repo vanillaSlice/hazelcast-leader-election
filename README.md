@@ -9,10 +9,10 @@ Playing around with leadership election with [Hazelcast](https://hazelcast.com/)
 To create the initial deployment/perform updates:
 
 ```
-kubectl apply -f ./deployment
+kubectl apply -f ./k8s.yml
 ```
 
 To delete deployment:
 ```
-kubectl delete -f ./deployment
+kubectl delete -f ./k8s.yml
 ```
