@@ -30,7 +30,7 @@ public class HazelcastProperties {
   }
 
   public void setKubernetes(Kubernetes kubernetes) {
-    this.kubernetes = requireNonNull(kubernetes, "kubernetes is null");
+    this.kubernetes = Kubernetes.copyOf(kubernetes);
   }
 
   public int getMinQuorumSize() {
@@ -54,7 +54,8 @@ public class HazelcastProperties {
   }
 
   public void setSystemProperties(Map<String, String> systemProperties) {
-    this.systemProperties = requireNonNull(systemProperties, "systemProperties is null");
+    this.systemProperties =
+        new HashMap<>(requireNonNull(systemProperties, "systemProperties is null"));
   }
 
   public static class Kubernetes {
@@ -64,6 +65,15 @@ public class HazelcastProperties {
     private String namespace = "default";
 
     private String serviceName = "leader-election-hazelcast-discovery";
+
+    public static Kubernetes copyOf(Kubernetes kubernetes) {
+      requireNonNull(kubernetes, "kubernetes is null");
+      Kubernetes copy = new Kubernetes();
+      copy.enabled = kubernetes.enabled;
+      copy.namespace = kubernetes.namespace;
+      copy.serviceName = kubernetes.serviceName;
+      return copy;
+    }
 
     public boolean isEnabled() {
       return enabled;

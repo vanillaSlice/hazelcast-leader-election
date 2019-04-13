@@ -22,7 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 @EnableScheduling
 @ConditionalOnProperty(
-    prefix = "kubernetes",
+    prefix = "leader-election.kubernetes",
     name = "enabled",
     havingValue = "true",
     matchIfMissing = true
