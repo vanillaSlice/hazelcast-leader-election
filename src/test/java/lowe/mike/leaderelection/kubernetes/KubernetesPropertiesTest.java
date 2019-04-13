@@ -1,9 +1,8 @@
-package lowe.mike.leaderelection.config;
+package lowe.mike.leaderelection.kubernetes;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import lowe.mike.leaderelection.kubernetes.KubernetesProperties;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;

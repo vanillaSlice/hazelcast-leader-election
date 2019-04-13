@@ -32,7 +32,7 @@ public class LeaderElectionControllerTest {
   }
 
   @Test
-  public void leader_returnsResponse() throws UnknownHostException {
+  public void leader_returnsExpectedResponse() throws UnknownHostException {
     when(leaderService.isLeader()).thenReturn(true, false);
 
     Map<String, Object> response1 = controller.leader();

@@ -22,7 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 @EnableScheduling
 @ConditionalOnProperty(
-    prefix = "kubernetes",
+    prefix = "leader-election.kubernetes",
     name = "enabled",
     havingValue = "true",
     matchIfMissing = true
@@ -44,29 +44,29 @@ public class KubernetesConfig {
   }
 
   /**
-   * Kubernetes update endpoint service.
+   * Kubernetes update endpoints service.
    */
   @Bean
-  public KubernetesUpdateEndpointService kubernetesUpdateEndpointService(
+  public KubernetesUpdateEndpointsService kubernetesUpdateEndpointsService(
       CoreV1Api coreV1Api,
       KubernetesProperties properties,
       LeaderChangeSender leaderChangeSender,
       LeaderService leaderService,
       TaskScheduler taskScheduler) {
-    logger.info("Creating KubernetesUpdateEndpointService");
+    logger.info("Creating KubernetesUpdateEndpointsService");
 
-    KubernetesUpdateEndpointService endpointService =
-        new KubernetesUpdateEndpointService(coreV1Api, properties);
+    KubernetesUpdateEndpointsService endpointsService =
+        new KubernetesUpdateEndpointsService(coreV1Api, properties);
 
-    leaderChangeSender.addReceiver(endpointService);
+    leaderChangeSender.addReceiver(endpointsService);
 
-    logger.info(
-        "Scheduling Kubernetes endpoint refresh at interval: {}", properties.getEndpointsRefresh());
+    logger.info("Scheduling Kubernetes endpoints refresh at interval: {}",
+        properties.getEndpointsRefresh());
 
     taskScheduler.scheduleAtFixedRate(
-        () -> endpointService.update(leaderService.isLeader()), properties.getEndpointsRefresh());
+        () -> endpointsService.update(leaderService.isLeader()), properties.getEndpointsRefresh());
 
-    return endpointService;
+    return endpointsService;
   }
 
   /**
