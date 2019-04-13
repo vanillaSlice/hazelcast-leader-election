@@ -66,6 +66,9 @@ public class HazelcastProperties {
 
     private String serviceName = "leader-election-hazelcast-discovery";
 
+    /**
+     * Creates a new {@code Kubernetes} copy.
+     */
     public static Kubernetes copyOf(Kubernetes kubernetes) {
       requireNonNull(kubernetes, "kubernetes is null");
       Kubernetes copy = new Kubernetes();

@@ -60,8 +60,8 @@ public class KubernetesConfig {
 
     leaderChangeSender.addReceiver(endpointsService);
 
-    logger.info(
-        "Scheduling Kubernetes endpoints refresh at interval: {}", properties.getEndpointsRefresh());
+    logger.info("Scheduling Kubernetes endpoints refresh at interval: {}",
+        properties.getEndpointsRefresh());
 
     taskScheduler.scheduleAtFixedRate(
         () -> endpointsService.update(leaderService.isLeader()), properties.getEndpointsRefresh());
