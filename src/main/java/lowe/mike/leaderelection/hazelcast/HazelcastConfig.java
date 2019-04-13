@@ -33,10 +33,14 @@ public class HazelcastConfig {
       JoinConfig joinConfig,
       QuorumConfig quorumConfig,
       LockConfig lockConfig) {
+    logger.info("Creating Config");
+
     Config config = new Config();
 
     config.getProperties().putAll(properties.getSystemProperties());
     config.getNetworkConfig().setJoin(joinConfig);
+
+    logger.info("Quorum enabled: {}", properties.isQuorumEnabled());
 
     if (properties.isQuorumEnabled()) {
       config.addQuorumConfig(quorumConfig);
@@ -52,7 +56,11 @@ public class HazelcastConfig {
    */
   @Bean
   public JoinConfig joinConfig(HazelcastProperties properties) {
+    logger.info("Creating JoinConfig");
+
     JoinConfig joinConfig = new JoinConfig();
+
+    logger.info("Kubernetes enabled: {}", properties.getKubernetes().isEnabled());
 
     if (properties.getKubernetes().isEnabled()) {
       joinConfig.getMulticastConfig().setEnabled(false);
@@ -72,6 +80,8 @@ public class HazelcastConfig {
   public QuorumConfig quorumConfig(@Value("${spring.application.name}") String applicationName,
       HazelcastProperties properties,
       QuorumListenerConfig quorumListenerConfig) {
+    logger.info("Creating QuorumConfig");
+
     return new QuorumConfig()
         .setEnabled(true)
         .setName(applicationName)
@@ -85,6 +95,8 @@ public class HazelcastConfig {
    */
   @Bean
   public QuorumListenerConfig quorumListenerConfig() {
+    logger.info("Creating QuorumListenerConfig");
+
     return (QuorumListenerConfig) new QuorumListenerConfig()
         .setImplementation(e -> logger.info("Quorum present: {}", e.isPresent()));
   }
@@ -94,6 +106,8 @@ public class HazelcastConfig {
    */
   @Bean
   public LockConfig lockConfig(@Value("${spring.application.name}") String applicationName) {
+    logger.info("Creating LockConfig");
+
     return new LockConfig()
         .setName(applicationName)
         .setQuorumName(applicationName);
@@ -104,6 +118,8 @@ public class HazelcastConfig {
    */
   @Bean
   public LockRegistry lockRegistry(HazelcastInstance hazelcastInstance) {
+    logger.info("Creating LockRegistry");
+
     return new HazelcastLockRegistry(hazelcastInstance);
   }
 }

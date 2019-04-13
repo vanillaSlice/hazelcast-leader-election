@@ -1,6 +1,7 @@
-hazelcast:
-  kubernetes:
-    enabled: false
-  quorum-enabled: false
-  system-properties:
-    hazelcast.initial.min.cluster.size: '1'
+leader-election:
+  hazelcast:
+    kubernetes:
+      enabled: false
+    quorum-enabled: false
+    system-properties:
+      hazelcast.initial.min.cluster.size: '1'

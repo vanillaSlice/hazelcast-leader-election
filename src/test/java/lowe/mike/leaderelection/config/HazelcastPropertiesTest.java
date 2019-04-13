@@ -20,6 +20,14 @@ public class HazelcastPropertiesTest {
   private final HazelcastProperties properties = new HazelcastProperties();
 
   @Test
+  public void setKubernetes_null_throwsNullPointerException() {
+    Exception exception = assertThrows(NullPointerException.class,
+        () -> properties.setKubernetes(null));
+
+    assertEquals("kubernetes is null", exception.getMessage());
+  }
+
+  @Test
   public void setSystemProperties_null_throwsNullPointerException() {
     Exception exception = assertThrows(NullPointerException.class,
         () -> properties.setSystemProperties(null));

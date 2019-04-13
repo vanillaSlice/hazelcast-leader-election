@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -18,8 +21,7 @@ public class LeaderElectionControllerTest {
 
   private final LeaderService leaderService = mock(LeaderService.class);
 
-  private final LeaderElectionController leaderElectionController =
-      new LeaderElectionController(leaderService);
+  private final LeaderElectionController controller = new LeaderElectionController(leaderService);
 
   @Test
   public void constructor_nullLeaderService_throwsNullPointerException() {
@@ -30,10 +32,15 @@ public class LeaderElectionControllerTest {
   }
 
   @Test
-  public void leader_returnsIfLeaderInMap() {
+  public void leader_returnsResponse() throws UnknownHostException {
     when(leaderService.isLeader()).thenReturn(true, false);
 
-    assertTrue((boolean) leaderElectionController.leader().get("leader"));
-    assertFalse((boolean) leaderElectionController.leader().get("leader"));
+    Map<String, Object> response1 = controller.leader();
+    assertTrue((boolean) response1.get("leader"));
+    assertEquals(InetAddress.getLocalHost().getHostAddress(), response1.get("ip"));
+
+    Map<String, Object> response2 = controller.leader();
+    assertFalse((boolean) response2.get("leader"));
+    assertEquals(InetAddress.getLocalHost().getHostAddress(), response2.get("ip"));
   }
 }

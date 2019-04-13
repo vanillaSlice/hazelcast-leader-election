@@ -1,7 +1,7 @@
 package lowe.mike.leaderelection.election;
 
 /**
- * An object that will be notify {@link LeaderChangeReceiver}s when leadership changes.
+ * An object that will notify {@link LeaderChangeReceiver}s when leadership changes.
  *
  * @author Mike Lowe
  */

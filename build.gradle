@@ -38,6 +38,7 @@ dependencies {
     compile group: 'org.springframework.integration', name: 'spring-integration-hazelcast', version: '1.0.0.RELEASE'
     compile group: 'com.hazelcast', name: 'hazelcast', version: '3.11.2'
     compile group: 'com.hazelcast', name: 'hazelcast-kubernetes', version: '1.4'
+    compile group: 'io.kubernetes', name: 'client-java', version: '4.0.0'
 }
 
 testSets {
