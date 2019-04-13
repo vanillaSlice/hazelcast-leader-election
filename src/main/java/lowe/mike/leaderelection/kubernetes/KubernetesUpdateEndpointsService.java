@@ -15,15 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Service that updates the Kubernetes service endpoint to route traffic to only this instance of
+ * Service that updates the Kubernetes service endpoints to route traffic to only this instance of
  * the application.
  *
  * @author Mike Lowe
  */
-public class KubernetesUpdateEndpointService implements LeaderChangeReceiver {
+public class KubernetesUpdateEndpointsService implements LeaderChangeReceiver {
 
   private static final Logger logger =
-      LoggerFactory.getLogger(KubernetesUpdateEndpointService.class);
+      LoggerFactory.getLogger(KubernetesUpdateEndpointsService.class);
 
   private final CoreV1Api coreV1Api;
   private final String name;
@@ -33,9 +33,9 @@ public class KubernetesUpdateEndpointService implements LeaderChangeReceiver {
   private final String dryRun = null;
 
   /**
-   * Creates a new {@code KubernetesUpdateEndpointService}.
+   * Creates a new {@code KubernetesUpdateEndpointsService}.
    */
-  public KubernetesUpdateEndpointService(CoreV1Api coreV1Api, KubernetesProperties properties) {
+  public KubernetesUpdateEndpointsService(CoreV1Api coreV1Api, KubernetesProperties properties) {
     this.coreV1Api = requireNonNull(coreV1Api, "coreV1Api is null");
     requireNonNull(properties, "properties is null");
     this.name = properties.getServiceName();
@@ -63,11 +63,11 @@ public class KubernetesUpdateEndpointService implements LeaderChangeReceiver {
   @Override
   public void update(boolean isLeader) {
     if (!isLeader) {
-      logger.debug("Not the leader, so not updating Kubernetes endpoint");
+      logger.debug("Not the leader, so not updating Kubernetes endpoints");
       return;
     }
 
-    logger.debug("Leader, so updating Kubernetes endpoint");
+    logger.debug("Leader, so updating Kubernetes endpoints");
 
     try {
       coreV1Api.replaceNamespacedEndpoints(name, namespace, body, pretty, dryRun);

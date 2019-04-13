@@ -12,23 +12,23 @@ import io.kubernetes.client.apis.CoreV1Api;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@link KubernetesUpdateEndpointService} unit tests.
+ * {@link KubernetesUpdateEndpointsService} unit tests.
  *
  * @author Mike Lowe
  */
-public class KubernetesUpdateEndpointServiceTest {
+public class KubernetesUpdateEndpointsServiceTest {
 
   private final CoreV1Api coreV1Api = mock(CoreV1Api.class);
 
   private final KubernetesProperties properties = new KubernetesProperties();
 
-  private final KubernetesUpdateEndpointService updateEndpointService =
-      new KubernetesUpdateEndpointService(coreV1Api, properties);
+  private final KubernetesUpdateEndpointsService updateEndpointsService =
+      new KubernetesUpdateEndpointsService(coreV1Api, properties);
 
   @Test
   public void constructor_nullCoreV1Api_throwsNullPointerException() {
     Exception exception = assertThrows(NullPointerException.class,
-        () -> new KubernetesUpdateEndpointService(null, properties));
+        () -> new KubernetesUpdateEndpointsService(null, properties));
 
     assertEquals("coreV1Api is null", exception.getMessage());
   }
@@ -36,21 +36,21 @@ public class KubernetesUpdateEndpointServiceTest {
   @Test
   public void constructor_nullProperties_throwsNullPointerException() {
     Exception exception = assertThrows(NullPointerException.class,
-        () -> new KubernetesUpdateEndpointService(coreV1Api, null));
+        () -> new KubernetesUpdateEndpointsService(coreV1Api, null));
 
     assertEquals("properties is null", exception.getMessage());
   }
 
   @Test
-  public void update_notLeader_doesNotUpdateEndpoint() throws ApiException {
-    updateEndpointService.update(false);
+  public void update_notLeader_doesNotUpdateEndpoints() throws ApiException {
+    updateEndpointsService.update(false);
 
     verify(coreV1Api, never()).replaceNamespacedEndpoints(any(), any(), any(), any(), any());
   }
 
   @Test
-  public void update_leader_updatesEndpoint() throws ApiException {
-    updateEndpointService.update(true);
+  public void update_leader_updatesEndpoints() throws ApiException {
+    updateEndpointsService.update(true);
 
     verify(coreV1Api).replaceNamespacedEndpoints(any(), any(), any(), any(), any());
   }
